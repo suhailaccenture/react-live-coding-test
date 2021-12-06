@@ -19,7 +19,6 @@ function Home() {
   };
 
   const onImageClick = () => {
-    console.log("Clicked pokeball");
     history.push(pokedexPath);
   };
 
