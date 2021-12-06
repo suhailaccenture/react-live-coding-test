@@ -1,13 +1,17 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+
+import { useEffect, useState } from "react";
+
+import Modal from "react-modal";
 import ReactLoading from "react-loading";
 import axios from "axios";
-import Modal from "react-modal";
 
 function PokeDex() {
   const [pokemons, setPokemons] = useState([]);
   const [pokemonDetail, setPokemonDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchResult, setPokemonSearch] = useState([]);
+  const getPokedexUrl = "https://pokeapi.co/api/v2/pokemon";
 
   const customStyles = {
     content: {
@@ -23,6 +27,36 @@ function PokeDex() {
     overlay: { backgroundColor: "grey" },
   };
 
+  const onItemClick = (pokemon) => {
+    setPokemonDetail(pokemon);
+  };
+
+  const onPokemonSearch = (event) => {
+    const keyword = event.target.value;
+
+    if (keyword !== "") {
+      const result = pokemons.filter((pokemon) =>
+        pokemon.name.toLowerCase().startsWith(keyword.toLowerCase())
+      );
+      setPokemonSearch(result);
+    } else {
+      setPokemonSearch([]);
+    }
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    axios.get(getPokedexUrl).then((response) => {
+      // Get and sort
+      const pokemonData = response.data['results'];
+      console.log(pokemonData);
+      const sortedData = pokemonData.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()));
+      console.log(sortedData);
+      setPokemons(sortedData);
+      setIsLoading(false);
+    });
+  }, []);
+
   if (!isLoading && pokemons.length === 0) {
     return (
       <div>
@@ -31,10 +65,13 @@ function PokeDex() {
           <h2>Requirement:</h2>
           <ul>
             <li>
-              Call this api:https://pokeapi.co/api/v2/pokemon to get pokedex, and show a list of pokemon name.
+              Call this api:https://pokeapi.co/api/v2/pokemon to get pokedex,
+              and show a list of pokemon name.
             </li>
             <li>Implement React Loading and show it during API call</li>
-            <li>when hover on the list item , change the item color to yellow.</li>
+            <li>
+              when hover on the list item , change the item color to yellow.
+            </li>
             <li>when clicked the list item, show the modal below</li>
             <li>
               Add a search bar on top of the bar for searching, search will run
@@ -42,7 +79,10 @@ function PokeDex() {
             </li>
             <li>Implement sorting and pagingation</li>
             <li>Commit your codes after done</li>
-            <li>If you do more than expected (E.g redesign the page / create a chat feature at the bottom right). it would be good.</li>
+            <li>
+              If you do more than expected (E.g redesign the page / create a
+              chat feature at the bottom right). it would be good.
+            </li>
           </ul>
         </header>
       </div>
@@ -56,20 +96,43 @@ function PokeDex() {
           <>
             <div className="App">
               <header className="App-header">
-                <b>Implement loader here</b>
+                <ReactLoading
+                  type={"balls"}
+                  color={"#FFFFFF"}
+                  height={667}
+                  width={375}
+                />
               </header>
             </div>
           </>
         ) : (
           <>
             <h1>Welcome to pokedex !</h1>
-            <b>Implement Pokedex list here</b>
+            <input
+              className="App-searchBar"
+              type="text"
+              name="name"
+              placeholder="Search Pokemon"
+              onKeyUp={onPokemonSearch}
+            />
+            {searchResult.length === 0
+              ? pokemons.map((pokemon) => (
+                  <li key={pokemon.name} onClick={() => onItemClick(pokemon)}>
+                    <span className="App-listItem">{pokemon.name}</span>
+                  </li>
+                ))
+              : searchResult.map((pokemon) => (
+                  <li key={pokemon.name} onClick={() => onItemClick(pokemon)}>
+                    <span className="App-listItem">{pokemon.name}</span>
+                  </li>
+                ))}
           </>
         )}
       </header>
       {pokemonDetail && (
         <Modal
-          isOpen={pokemonDetail}
+          isOpen={pokemonDetail != null}
+          ariaHideApp={false}
           contentLabel={pokemonDetail?.name || ""}
           onRequestClose={() => {
             setPokemonDetail(null);
@@ -85,7 +148,10 @@ function PokeDex() {
                 required in tabular format
               </li>
               <li>Create a bar chart based on the stats above</li>
-              <li>Create a  buttton to download the information generated in this modal as pdf. (images and chart must be included)</li>
+              <li>
+                Create a buttton to download the information generated in this
+                modal as pdf. (images and chart must be included)
+              </li>
             </ul>
           </div>
         </Modal>

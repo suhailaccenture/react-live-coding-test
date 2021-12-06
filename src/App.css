@@ -28,6 +28,17 @@
   color: #61dafb;
 }
 
+.App-listItem:hover {
+  color: yellow;
+}
+
+.App-searchBar {
+  width: 50%;
+  position: center;
+  display: flex;
+  margin-bottom: 16px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
