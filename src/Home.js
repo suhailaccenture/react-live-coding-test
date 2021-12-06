@@ -1,9 +1,11 @@
 import "./App.css";
 
+import { useHistory } from "react-router-dom";
 import { useState } from "react";
 
 function Home() {
   const [isReady, setIsReady] = useState(false);
+  const pokedexPath = '/pokedex'
   
   const onInputChange = (e) => {
     switch(e.target.value) {
@@ -15,6 +17,11 @@ function Home() {
     }
   }
 
+  const onImageClick = () => {
+    console.log('Clicked pokeball')
+    useHistory.push(pokedexPath);
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -24,6 +31,7 @@ function Home() {
           className="App-logo"
           alt="logo"
           style={{ padding: "10px" }}
+          onClick={onImageClick}
         />
         <b>
           Requirement: Try to show the hidden image and make it clickable that

@@ -1,6 +1,8 @@
 import "./App.css";
+
+import { HashRouter, Route } from "react-router-dom";
+
 import Home from "./Home";
-import { Route, NavLink, HashRouter } from "react-router-dom";
 import PokeDex from "./PokeDex";
 
 function App() {
@@ -10,7 +12,6 @@ function App() {
         <Route exact path="/" component={Home}/>
         <Route path="/pokedex" component={PokeDex}/>
       </div>
-      
     </HashRouter>
   );
 }
