@@ -1,11 +1,8 @@
 import "./App.css";
 
-import { useEffect, useState } from "react";
-
-import { NavLink } from "react-router-dom";
+import { useState } from "react";
 
 function Home() {
-  const [text, setText] = useState("");
   const [isReady, setIsReady] = useState(false);
   
   const onInputChange = (e) => {
