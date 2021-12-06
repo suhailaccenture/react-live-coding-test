@@ -11,7 +11,11 @@ function PokeDex() {
   const [pokemonDetail, setPokemonDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchResult, setPokemonSearch] = useState([]);
-  const getPokedexUrl = "https://pokeapi.co/api/v2/pokemon";
+  const [currentUrl, setCurrentUrl] = useState(
+    "https://pokeapi.co/api/v2/pokemon"
+  );
+  const [previousUrl, setPreviousUrl] = useState(null);
+  const [nextUrl, setNextUrl] = useState(null);
 
   const customStyles = {
     content: {
@@ -46,16 +50,19 @@ function PokeDex() {
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(getPokedexUrl).then((response) => {
-      // Get and sort
-      const pokemonData = response.data['results'];
-      console.log(pokemonData);
-      const sortedData = pokemonData.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()));
-      console.log(sortedData);
-      setPokemons(sortedData);
-      setIsLoading(false);
-    });
-  }, []);
+    axios
+      .get(currentUrl)
+      .then((response) => {
+        setPreviousUrl(response.data["previous"]);
+        setNextUrl(response.data["next"]);
+        const pokemonData = response.data["results"];
+        return pokemonData.sort((a, b) => a.name.localeCompare(b.name));
+      })
+      .then((pokemons) => {
+        setPokemons(pokemons);
+        setIsLoading(false);
+      });
+  }, [currentUrl]);
 
   if (!isLoading && pokemons.length === 0) {
     return (
@@ -126,6 +133,29 @@ function PokeDex() {
                     <span className="App-listItem">{pokemon.name}</span>
                   </li>
                 ))}
+            <div className="App-buttonContainer">
+              {previousUrl && (
+                <button
+                  onClick={() => {
+                    console.log(previousUrl);
+                    setCurrentUrl(previousUrl);
+                  }}
+                >
+                  Previous
+                </button>
+              )}
+              {nextUrl && (
+                <button
+                  style={previousUrl ? { marginLeft: "5.0rem" } : null}
+                  onClick={() => {
+                    console.log(nextUrl);
+                    setCurrentUrl(nextUrl);
+                  }}
+                >
+                  Next
+                </button>
+              )}
+            </div>
           </>
         )}
       </header>
