@@ -5,34 +5,36 @@ import { useState } from "react";
 
 function Home() {
   const [isReady, setIsReady] = useState(false);
-  const pokedexPath = '/pokedex'
-  
+  const pokedexPath = "/pokedex";
+  let history = useHistory();
+
   const onInputChange = (e) => {
-    switch(e.target.value) {
-      case 'Ready!':
+    switch (e.target.value) {
+      case "Ready!":
         setIsReady(true);
         break;
       default:
         setIsReady(false);
     }
-  }
+  };
 
   const onImageClick = () => {
-    console.log('Clicked pokeball')
-    useHistory.push(pokedexPath);
-  }
+    console.log("Clicked pokeball");
+    history.push(pokedexPath);
+  };
 
   return (
     <div className="App">
       <header className="App-header">
-        <img
-          hidden={!isReady}
-          src="https://www.freeiconspng.com/uploads/file-pokeball-png-0.png"
-          className="App-logo"
-          alt="logo"
-          style={{ padding: "10px" }}
-          onClick={onImageClick}
-        />
+        <div onClick={onImageClick}>
+          <img
+            hidden={!isReady}
+            src="https://www.freeiconspng.com/uploads/file-pokeball-png-0.png"
+            className="App-logo"
+            alt="logo"
+            style={{ padding: "10px" }}
+          />
+        </div>
         <b>
           Requirement: Try to show the hidden image and make it clickable that
           goes to /pokedex when the input below is "Ready!" remember to hide the
@@ -40,9 +42,7 @@ function Home() {
         </b>
         <p>Are you ready to be a pokemon master?</p>
         <input type="text" name="name" onChange={onInputChange} />
-        {
-          !isReady && <span style={{ color: "red" }}>I am not ready yet!</span>
-        }
+        {!isReady && <span style={{ color: "red" }}>I am not ready yet!</span>}
       </header>
     </div>
   );
